@@ -16,9 +16,20 @@ app.use(bodyParser.json());
 
 var port     = process.env.PORT || 8080; // set our port
 
-var mongoose   = require('mongoose');
-mongoose.connect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o'); // connect to our database
+var mongoose = require('mongoose');
+var options = { server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }, 
+                replset: { socketOptions: { keepAlive: 1, connectTimeoutMS : 30000 } } };  
+//mongoose.connect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o'); // connect to our database'
+mongoose.connect('mongodb://sample-user:7CYjSx1uPCEaTcoY@ds037195.mongolab.com:37195/sample-db',options);
+//mongoose.connect('mongodb://user1:abcd1234@ds037195.mongolab.com:37195/sample-db');
+//mongoose.connect('mongodb://user1:abcd1234@ds037215.mongolab.com:37215/database1',options);
+
 var Bear     = require('./app/models/bear');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log("connected");
+});
 
 // ROUTES FOR OUR API
 // =============================================================================
